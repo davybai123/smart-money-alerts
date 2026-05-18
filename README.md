@@ -1,1 +1,1 @@
-# smart-money-alerts
+# PT-APP
