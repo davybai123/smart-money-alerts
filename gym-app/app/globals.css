@@ -1,0 +1,142 @@
+@import "tailwindcss";
+
+:root {
+  --background: #080808;
+  --foreground: #f0f0f0;
+  --card: #111111;
+  --card-border: #1e1e1e;
+  --accent: #22c55e;
+  --accent-dark: #16a34a;
+  --muted: #6b7280;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, sans-serif;
+}
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #111; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #22c55e; }
+
+.card {
+  background: #111;
+  border: 1px solid #1e1e1e;
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.btn-primary {
+  background: #22c55e;
+  color: #000;
+  font-weight: 700;
+  padding: 0.5rem 1.25rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-primary:hover { background: #16a34a; }
+
+.btn-ghost {
+  background: transparent;
+  color: #f0f0f0;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #2a2a2a;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.btn-ghost:hover { border-color: #22c55e; background: rgba(34,197,94,0.05); }
+
+.input {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  color: #f0f0f0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  width: 100%;
+  font-size: 0.875rem;
+  transition: border-color 0.15s;
+}
+.input:focus { outline: none; border-color: #22c55e; }
+.input::placeholder { color: #555; }
+
+.textarea {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  color: #f0f0f0;
+  padding: 0.625rem 0.75rem;
+  border-radius: 8px;
+  width: 100%;
+  font-size: 0.875rem;
+  resize: vertical;
+  transition: border-color 0.15s;
+  font-family: inherit;
+}
+.textarea:focus { outline: none; border-color: #22c55e; }
+.textarea::placeholder { color: #555; }
+
+.select {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  color: #f0f0f0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+.select:focus { outline: none; border-color: #22c55e; }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.badge-green { background: rgba(34,197,94,0.15); color: #22c55e; }
+.badge-yellow { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.badge-blue { background: rgba(59,130,246,0.15); color: #60a5fa; }
+.badge-red { background: rgba(239,68,68,0.15); color: #f87171; }
+.badge-purple { background: rgba(168,85,247,0.15); color: #c084fc; }
+
+.stat-card {
+  background: #111;
+  border: 1px solid #1e1e1e;
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.progress-bar {
+  background: #1e1e1e;
+  border-radius: 999px;
+  height: 6px;
+  overflow: hidden;
+}
+.progress-fill {
+  background: #22c55e;
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}

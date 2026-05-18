@@ -1,0 +1,4 @@
+node_modules/
+gym-app/node_modules/
+gym-app/.next/
+gym-app/.turbo/
