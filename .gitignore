@@ -2,3 +2,8 @@ node_modules/
 PT-App/node_modules/
 PT-App/.next/
 PT-App/.turbo/
+pt-mobile/node_modules/
+pt-mobile/.expo/
+pt-mobile/android/
+pt-mobile/ios/
+pt-mobile/.env
