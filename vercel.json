@@ -1,6 +1,0 @@
-{
-  "buildCommand": "cd PT-App && npm install && npm run build",
-  "outputDirectory": "PT-App/.next",
-  "installCommand": "cd PT-App && npm install",
-  "framework": "nextjs"
-}
