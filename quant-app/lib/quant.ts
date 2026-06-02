@@ -89,7 +89,7 @@ export function parseCongressTrade(raw: string): CongressTradeRow {
   const tickerMatch = raw.match(/([A-Z]{1,5}:[A-Z]{2})/);
   const ticker = tickerMatch?.[1] ?? null;
 
-  const typeMatch = raw.match(/\b(buy|sell)\b/i);
+  const typeMatch = raw.match(/(buy|sell)/i);
   const tradeType = typeMatch?.[1]?.toLowerCase() ?? null;
 
   const sizeMatch = raw.match(/(\d+[KM])[\s–\-]+(\d+[KM])/i);
