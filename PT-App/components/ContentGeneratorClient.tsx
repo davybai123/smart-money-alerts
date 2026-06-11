@@ -200,7 +200,7 @@ export default function ContentGeneratorClient() {
           <span style={{ fontSize: "2rem" }}>⚽</span>
           <div>
             <h1 style={{ fontSize: "1.8rem", fontWeight: 900, letterSpacing: "-0.03em", lineHeight: 1 }}>
-              Content <span style={{ color: "#22c55e" }}>Generator</span>
+              <span style={{ color: "#22c55e" }}>Faceless AI</span> · Content Generator
             </h1>
             <p style={{ color: "#666", fontSize: "0.82rem", marginTop: "0.2rem" }}>
               AI-powered World Cup 2026 content — scripts, captions & threads at scale

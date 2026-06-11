@@ -124,7 +124,7 @@ export default function SchedulerClient() {
           <span style={{ fontSize: "2rem" }}>📅</span>
           <div>
             <h1 style={{ fontSize: "1.8rem", fontWeight: 900, letterSpacing: "-0.03em", lineHeight: 1 }}>
-              Social <span style={{ color: "#22c55e" }}>Scheduler</span>
+              <span style={{ color: "#22c55e" }}>Faceless AI</span> · Scheduler
             </h1>
             <p style={{ color: "#666", fontSize: "0.82rem", marginTop: "0.2rem" }}>
               Plan your publish queue across all platforms

@@ -11,9 +11,10 @@ const nav = [
   { href: "/recipes", label: "Recipes", icon: "🍳" },
   { href: "/journal", label: "Journal", icon: "📓" },
   { href: "/skittles", label: "Skittles 1:1", icon: "🏉" },
-  { href: "/content", label: "Content Generator", icon: "⚽", section: "World Cup 2026" },
-  { href: "/pipeline", label: "Pipeline Tracker", icon: "📊", section: "World Cup 2026" },
-  { href: "/scheduler", label: "Social Scheduler", icon: "📅", section: "World Cup 2026" },
+  { href: "/faceless", label: "Faceless AI", icon: "🤖", section: "Faceless AI" },
+  { href: "/content", label: "Content Generator", icon: "⚽", section: "Faceless AI" },
+  { href: "/pipeline", label: "Pipeline Tracker", icon: "📊", section: "Faceless AI" },
+  { href: "/scheduler", label: "Social Scheduler", icon: "📅", section: "Faceless AI" },
 ];
 
 export default function Sidebar() {
@@ -86,8 +87,8 @@ export default function Sidebar() {
               <div key={item.href}>
                 {showDivider && (
                   <div style={{ paddingTop: "0.75rem", paddingBottom: "0.4rem", paddingLeft: "0.875rem" }}>
-                    <div style={{ fontSize: "0.6rem", fontWeight: 800, color: "#f59e0b", textTransform: "uppercase", letterSpacing: "0.12em" }}>
-                      ⚽ World Cup 2026
+                    <div style={{ fontSize: "0.6rem", fontWeight: 800, color: "#22c55e", textTransform: "uppercase", letterSpacing: "0.12em" }}>
+                      🤖 Faceless AI
                     </div>
                   </div>
                 )}
