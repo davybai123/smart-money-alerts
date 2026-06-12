@@ -4,7 +4,7 @@ import * as path from 'path';
 import { createLogger } from '../lib/logger';
 import { updateVideo } from '../db/client';
 import type { Script, ScriptScene } from '../db/schema';
-import { generateVoiceover, splitAndGenerateVoiceover } from '../voice/elevenlabs';
+import { splitAndGenerateVoiceover } from '../voice/elevenlabs';
 import { generateSceneVisuals } from '../visuals/replicate';
 import { generateSubtitles } from './subtitles';
 import { assembleVideo, SceneAsset } from './assembler';
@@ -14,6 +14,10 @@ const logger = createLogger('video-pipeline');
 
 export interface VideoProductionInput {
   script: Script;
+  /** Resolved topic string (from associated ContentOpportunity) */
+  topic: string;
+  /** Resolved teams string (from associated ContentOpportunity) */
+  teams: string;
   outputDir: string;
 }
 
@@ -71,11 +75,11 @@ async function mkdirAll(dirs: string[]): Promise<void> {
 }
 
 export async function produceVideo(input: VideoProductionInput): Promise<VideoProductionResult> {
-  const { script, outputDir } = input;
+  const { script, topic, teams, outputDir } = input;
 
   logger.info('Starting video production pipeline', {
     scriptId: script.id,
-    topic: script.topic,
+    topic,
     outputDir,
   });
 
@@ -145,9 +149,9 @@ export async function produceVideo(input: VideoProductionInput): Promise<VideoPr
     // Step 9: Generate thumbnail
     logger.info('Step 9: Generating thumbnail');
     const thumbnailResult = await generateThumbnail({
-      title: script.title ?? script.topic,
-      topic: script.topic,
-      teams: script.teams ?? '',
+      title: script.title,
+      topic,
+      teams,
       style: 'shock',
     });
     const thumbnailPath = thumbnailResult.imagePath;
