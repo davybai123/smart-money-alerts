@@ -59,7 +59,7 @@ export async function discoverOpportunities(
     log.info(`Processing query: "${query}"`);
 
     // ── YouTube signals ──────────────────────────────────────────────────
-    let trendingVideos = [];
+    let trendingVideos: Awaited<ReturnType<typeof fetchYouTubeTrending>> = [];
     try {
       trendingVideos = await withRetry(
         () => fetchYouTubeTrending(youtubeApiKey, query, 10),
@@ -77,7 +77,7 @@ export async function discoverOpportunities(
     }
 
     // ── Reddit signals ───────────────────────────────────────────────────
-    let redditPosts = [];
+    let redditPosts: Awaited<ReturnType<typeof searchReddit>> = [];
     try {
       redditPosts = await withRetry(
         () => searchReddit(query, SOCCER_SUBREDDITS),
