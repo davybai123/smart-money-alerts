@@ -38,7 +38,6 @@ export async function generateVoiceover(
       const { apiKey, voiceId } = getEnvVars();
       logger.info('Generating voiceover', { textLength: text.length, outputPath });
 
-
       const url = `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream`;
 
       const response = await axios.post(
@@ -86,7 +85,7 @@ export async function generateVoiceover(
         fileSizeBytes: stats.size,
       };
     },
-    { attempts: 3, delayMs: 1000 }
+    { maxAttempts: 3, delayMs: 1000, backoff: true, label: 'elevenlabs.generateVoiceover' }
   );
 }
 
