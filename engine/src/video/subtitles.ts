@@ -45,7 +45,7 @@ export function formatSRTTime(seconds: number): string {
 
 export function parseSRT(srtContent: string): SRTEntry[] {
   const entries: SRTEntry[] = [];
-  // Split on blank lines between blocks
+  // Split on blank lines between subtitle blocks
   const blocks = srtContent.trim().split(/\r?\n\r?\n/);
 
   for (const block of blocks) {
@@ -133,10 +133,15 @@ export async function generateSubtitles(
         durationSeconds = srtTimeToSeconds(lastEntry.endTime);
       }
 
-      logger.info('Subtitles generated', { outputPath, wordCount, durationSeconds, entries: entries.length });
+      logger.info('Subtitles generated', {
+        outputPath,
+        wordCount,
+        durationSeconds,
+        entries: entries.length,
+      });
 
       return { srtPath: outputPath, wordCount, durationSeconds };
     },
-    { attempts: 3, delayMs: 1000 }
+    { maxAttempts: 3, delayMs: 1000, backoff: true, label: 'whisper.generateSubtitles' }
   );
 }
