@@ -32,7 +32,8 @@ async function insert<T>(table: string, data: Partial<T>): Promise<T> {
   log.debug(`Inserting into ${table}`, { data });
   const { data: result, error } = await getSupabase()
     .from(table)
-    .insert(data)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .insert(data as any)
     .select()
     .single();
   if (error) {

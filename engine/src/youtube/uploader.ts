@@ -79,8 +79,9 @@ export async function uploadVideo(input: UploadInput): Promise<UploadResult> {
         );
 
         // Track upload progress
-        if (req && typeof (req as unknown as { on: Function }).on === 'function') {
-          (req as unknown as { on: Function }).on('progress', (evt: { bytesRead?: number }) => {
+        const reqAny = req as unknown as { on?: (e: string, h: (evt: { bytesRead?: number }) => void) => void };
+        if (typeof reqAny?.on === 'function') {
+          reqAny.on('progress', (evt: { bytesRead?: number }) => {
             if (fileSize > 0 && evt.bytesRead) {
               const pct = Math.floor((evt.bytesRead / fileSize) * 100);
               if (pct >= lastLoggedPercent + 10) {

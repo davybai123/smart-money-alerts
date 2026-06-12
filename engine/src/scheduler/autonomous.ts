@@ -70,40 +70,51 @@ async function runPhase(name: string, fn: () => Promise<void>): Promise<void> {
  * haven't finished their init (reduces circular dependency risk at startup).
  */
 async function discoverAndScore(): Promise<void> {
-  // Dynamic import to avoid circular module deps at startup
-  const { discoverOpportunities } = await import('../discovery/index');
-  const supabase = getSupabase();
+  const { discoverOpportunities, WORLD_CUP_QUERIES } = await import('../discovery/index');
+  const { scoreOpportunity } = await import('../discovery/scorer');
+  const { insertOpportunity } = await import('../db/client');
 
-  const opportunities = await discoverOpportunities();
-  if (opportunities.length === 0) {
+  const inputs = await discoverOpportunities({
+    queries: WORLD_CUP_QUERIES,
+    limit: 10,
+  });
+
+  if (inputs.length === 0) {
     log.info('No opportunities discovered this cycle');
     return;
   }
 
-  // Select top 3 by opportunity_score and mark as 'selected'
-  const top3 = [...opportunities]
-    .sort((a, b) => b.opportunity_score - a.opportunity_score)
+  const top3 = inputs
+    .map((input) => ({ input, score: scoreOpportunity(input) }))
+    .sort((a, b) => b.score.opportunityScore - a.score.opportunityScore)
     .slice(0, 3);
 
-  for (const opp of top3) {
-    const { error } = await supabase
-      .from('content_opportunities')
-      .update({ status: 'selected' })
-      .eq('id', opp.id);
-
-    if (error) {
-      log.warn(`Failed to mark opportunity ${opp.id} as selected`, {
-        error: error.message,
+  for (const { input, score } of top3) {
+    try {
+      const opp = await insertOpportunity({
+        topic: input.topic,
+        teams: input.teams,
+        match_date: input.matchDate,
+        demand_score: score.demandScore,
+        competition_score: score.competitionScore,
+        opportunity_score: score.opportunityScore,
+        predicted_ctr: score.predictedCtr,
+        predicted_rpm: score.predictedRpm,
+        sources: {},
+        status: 'selected',
       });
-    } else {
-      log.info(`Selected opportunity: ${opp.topic}`, {
+      log.info(`Selected opportunity: ${input.topic}`, {
         id: opp.id,
-        score: opp.opportunity_score,
+        score: score.opportunityScore,
+      });
+    } catch (err) {
+      log.warn(`Failed to insert opportunity: ${input.topic}`, {
+        error: err instanceof Error ? err.message : String(err),
       });
     }
   }
 
-  log.info(`Discovered ${opportunities.length} opportunities, selected top ${top3.length}`);
+  log.info(`Discovered ${inputs.length} opportunities, inserted top ${top3.length}`);
 }
 
 /**
@@ -152,7 +163,14 @@ async function scriptPhase(): Promise<void> {
 
   for (const opp of selected) {
     try {
-      await produceScript(opp.id);
+      const oppInput = {
+        topic: opp.topic as string,
+        teams: opp.teams as string,
+        matchDate: opp.match_date as string,
+        demandSignals: { youtubeTrendingVideos: [], redditPosts: [] },
+        competitionSignals: { topVideoAvgViews: 0, resultCount: 0 },
+      };
+      await produceScript(oppInput, opp.id as string);
       await supabase
         .from('content_opportunities')
         .update({ status: 'scripted' })
