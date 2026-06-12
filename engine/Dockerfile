@@ -1,6 +1,19 @@
+FROM node:20-alpine AS builder
+
+RUN apk add --no-cache ffmpeg python3
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci
+
+COPY tsconfig.json ./
+COPY src/ ./src/
+RUN npm run build
+
+# Production stage
 FROM node:20-alpine
 
-# Install ffmpeg and python3 (used by some media processing deps)
 RUN apk add --no-cache ffmpeg python3
 
 WORKDIR /app
@@ -8,7 +21,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci --only=production
 
-COPY dist/ ./dist/
+COPY --from=builder /app/dist ./dist
 
 ENV NODE_ENV=production
 
