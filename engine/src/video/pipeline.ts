@@ -158,13 +158,13 @@ export async function produceVideo(input: VideoProductionInput): Promise<VideoPr
     logger.info('Thumbnail generated', { thumbnailPath });
 
     // Step 10: Update video status in DB
+    // Note: video_url and thumbnail_url would typically be S3 URLs after upload;
+    // we store local paths as placeholders until the upload step runs.
     logger.info('Step 10: Updating video record in database');
     await updateVideo(script.id, {
       status: 'ready',
-      video_path: assemblyResult.outputPath,
-      thumbnail_path: thumbnailPath,
-      duration_seconds: assemblyResult.durationSeconds,
-      file_size_bytes: assemblyResult.fileSizeBytes,
+      video_url: assemblyResult.outputPath,
+      thumbnail_url: thumbnailPath,
     });
     logger.info('Database updated, production complete');
 
