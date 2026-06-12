@@ -29,9 +29,9 @@ export default function Sidebar() {
         style={{ background: "#080808", borderBottom: "1px solid #1e1e1e" }}
       >
         <div className="flex items-center gap-2">
-          <span style={{ fontSize: "1.4rem" }}>💪</span>
+          <span style={{ fontSize: "1.4rem" }}>🤖</span>
           <span style={{ fontWeight: 900, fontSize: "1.1rem", letterSpacing: "-0.02em" }}>
-            MONSER<span style={{ color: "#22c55e" }}>'S</span> GYM
+            FACELESS<span style={{ color: "#22c55e" }}>YT</span>
           </span>
         </div>
         <button
@@ -65,13 +65,13 @@ export default function Sidebar() {
         {/* Logo */}
         <div className="flex flex-col items-start px-6 pt-8 pb-6">
           <div className="flex items-center gap-2 mb-1">
-            <span style={{ fontSize: "2rem" }}>💪</span>
+            <span style={{ fontSize: "2rem" }}>🤖</span>
             <div>
               <div style={{ fontWeight: 900, fontSize: "1.1rem", letterSpacing: "-0.02em", lineHeight: 1 }}>
-                MONSER<span style={{ color: "#22c55e" }}>&apos;S</span> GYM
+                FACELESS<span style={{ color: "#22c55e" }}>YT</span>
               </div>
               <div style={{ fontSize: "0.65rem", color: "#555", letterSpacing: "0.12em", textTransform: "uppercase" }}>
-                Elite PT Platform
+                AI Content at Scale
               </div>
             </div>
           </div>
