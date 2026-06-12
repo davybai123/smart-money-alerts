@@ -35,6 +35,16 @@ interface RawSEOResponse {
   chapters: Array<{ timestamp: string; title: string }>;
 }
 
+const RAW_SEO_SCHEMA = `{
+  "titles": ["string (max 70 chars, required x5)"],
+  "description": "string (250-500 words)",
+  "tags": ["string (max 30 chars each, 20 total)"],
+  "hashtags": ["string (no # prefix, 5 total)"],
+  "chapters": [
+    { "timestamp": "MM:SS", "title": "string" }
+  ]
+}`;
+
 const POWER_WORDS = [
   'shocking',
   'insane',
@@ -63,7 +73,7 @@ export function scoreTitleCTR(title: string): number {
     score += 10;
   }
 
-  // Emotional / power words
+  // Emotional / power words (+8 each)
   for (const word of POWER_WORDS) {
     if (lowerTitle.includes(word)) {
       score += 8;
@@ -80,12 +90,12 @@ export function scoreTitleCTR(title: string): number {
     score += 3;
   }
 
-  // Year (2024-2026)
+  // Year (2024-2030)
   if (/\b20(2[4-9]|3\d)\b/.test(title)) {
     score += 4;
   }
 
-  // Length penalty if too long
+  // Length penalty if over 60 chars
   if (title.length > 60) {
     score -= Math.floor((title.length - 60) / 5) * 2;
   }
@@ -158,46 +168,19 @@ Stage/Context: ${stage}
 Target keywords: ${keywordList}
 Year: ${year}
 
-Return a JSON object with these exact fields:
-{
-  "titles": [
-    // 5 title variants, each MAX 70 characters
-    // Must include year ${year}
-    // Must include at least one emotional trigger word from: shocking, insane, biggest, worst, best, revealed, truth, secret, unbelievable, incredible
-    // Use numbers, brackets, and questions where natural
-  ],
-  "description": "A 250-500 word YouTube description. Structure:
-    - Hook paragraph (2-3 sentences grabbing attention)
-    - Chapters section with timestamps (use placeholders like 00:00 Intro, etc.)
-    - Keyword-rich body paragraph about the topic
-    - Call to action (Like, Subscribe, Comment)
-    - Social links placeholder: 🔔 Subscribe: [CHANNEL_LINK] | Twitter: [TWITTER_LINK] | Instagram: [IG_LINK]
-    - 5 relevant hashtags at the bottom",
-  "tags": [
-    // 20 tags total
-    // Mix of:
-    //   - Exact match (e.g. '${topic}')
-    //   - Broad (e.g. 'soccer analysis', 'football highlights', 'soccer ${year}')
-    //   - Channel brand (e.g. 'smart money alerts soccer')
-    // Each tag max 30 characters
-  ],
-  "hashtags": [
-    // 5 hashtags without # prefix, relevant to topic
-  ],
-  "chapters": [
-    // 5-8 chapters based on typical video structure
-    // Format: { "timestamp": "MM:SS", "title": "Chapter Title" }
-  ]
-}
+Requirements:
+- 5 title variants, each MAX 70 characters, must include year ${year}, must include at least one emotional trigger word (shocking, insane, biggest, worst, best, revealed, truth, secret, unbelievable, incredible). Use numbers, brackets/parentheses, and questions where natural.
+- Full description 250-500 words: start with a hook paragraph, include chapter timestamps like "00:00 Intro", keyword-rich body about the topic, call to action (Like, Subscribe, Comment), social links as placeholders: Subscribe: [CHANNEL_LINK] | Twitter: [TWITTER_LINK] | Instagram: [IG_LINK], and 5 hashtags at the bottom.
+- 20 tags: mix of exact-match (e.g. "${topic}"), broad (e.g. "soccer analysis", "football highlights", "soccer ${year}"), and channel brand (e.g. "smart money alerts soccer"). Each tag max 30 characters.
+- 5 hashtags without # prefix, relevant to topic.
+- 5-8 chapters based on typical video structure, timestamps as MM:SS.`;
 
-Return ONLY the JSON, no markdown fences.`;
-
-  const raw = await generateJSON<RawSEOResponse>(prompt);
+  const raw = await generateJSON<RawSEOResponse>(prompt, RAW_SEO_SCHEMA);
 
   const titles = raw.titles ?? [];
   const selectedTitle = selectBestTitle(titles);
 
-  // If scenes are available, override chapters with real timestamps
+  // If scenes are available, override chapters with real cumulative timestamps
   const chapters: Chapter[] =
     scenes.length > 0 ? estimateChapters(scenes) : (raw.chapters ?? []);
 
