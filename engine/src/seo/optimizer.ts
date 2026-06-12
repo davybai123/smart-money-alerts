@@ -21,10 +21,14 @@ export interface SEOInput {
 export interface SEOOutput {
   titles: string[];
   selectedTitle: string;
+  /** Alias for selectedTitle — satisfies youtube/scheduler.SEOOutput interface */
+  title: string;
   description: string;
   tags: string[];
   hashtags: string[];
   chapters: Chapter[];
+  /** Path to the chosen thumbnail — set after thumbnail generation */
+  thumbnailPath: string;
 }
 
 interface RawSEOResponse {
@@ -194,9 +198,12 @@ Requirements:
   return {
     titles,
     selectedTitle,
+    title: selectedTitle,
     description: raw.description ?? '',
     tags: raw.tags ?? [],
     hashtags: raw.hashtags ?? [],
     chapters,
+    // thumbnailPath is populated externally after thumbnail generation
+    thumbnailPath: '',
   };
 }
