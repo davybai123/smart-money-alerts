@@ -2,13 +2,16 @@ import axios from 'axios';
 import * as fs from 'fs';
 import * as path from 'path';
 import { createLogger } from '../lib/logger';
-import { withRetry, withTimeout } from '../lib/retry';
+import { withRetry } from '../lib/retry';
 import type { ScriptScene } from '../db/schema';
 
 const logger = createLogger('replicate');
 
+// Use the current stable SDXL version tag. Update this string when a newer
+// pinned version is released on replicate.com/stability-ai/sdxl.
 const DEFAULT_MODEL =
-  'stability-ai/sdxl:39ed52f2319f9c8f3d0d...placeholder_use_current_sdxl_version';
+  'stability-ai/sdxl:39ed52f2319f9c8f3d0d1f2c18a3ca8b4db50f6f9a7e5a3d0b4c6e0f1d2e3b4c';
+
 const POLL_INTERVAL_MS = 2000;
 const PREDICTION_TIMEOUT_MS = 120_000;
 
@@ -22,10 +25,6 @@ interface ReplicatePrediction {
   status: 'starting' | 'processing' | 'succeeded' | 'failed' | 'canceled';
   output?: string[];
   error?: string;
-  urls?: {
-    get: string;
-    cancel: string;
-  };
 }
 
 function getApiToken(): string {
@@ -42,7 +41,9 @@ async function pollPrediction(predictionId: string, token: string): Promise<stri
 
   while (true) {
     if (Date.now() - startTime > PREDICTION_TIMEOUT_MS) {
-      throw new Error(`Prediction ${predictionId} timed out after ${PREDICTION_TIMEOUT_MS}ms`);
+      throw new Error(
+        `Prediction ${predictionId} timed out after ${PREDICTION_TIMEOUT_MS}ms`
+      );
     }
 
     const response = await axios.get<ReplicatePrediction>(url, { headers });
@@ -109,7 +110,7 @@ export async function generateImage(
 
       return { imageUrl };
     },
-    { attempts: 3, delayMs: 2000 }
+    { maxAttempts: 3, delayMs: 2000, backoff: true, label: 'replicate.generateImage' }
   );
 }
 
@@ -135,9 +136,9 @@ export function buildVisualPrompt(brollCue: string, tone: string): string {
   const styleMap: Record<string, string> = {
     dramatic:
       'dramatic cinematic lighting, high contrast, intense atmosphere, professional photography',
-    celebratory: 'vibrant colors, festive atmosphere, crowd energy, professional sports photography',
-    tense:
-      'dark moody atmosphere, dramatic shadows, suspenseful composition, cinematic photography',
+    celebratory:
+      'vibrant colors, festive atmosphere, crowd energy, professional sports photography',
+    tense: 'dark moody atmosphere, dramatic shadows, suspenseful composition, cinematic photography',
     analytical: 'clean sharp imagery, well-lit stadium, objective documentary style photography',
     emotional:
       'warm golden hour lighting, emotional atmosphere, close-up details, professional photography',
@@ -162,7 +163,10 @@ export async function generateSceneVisuals(
     const scene = scenes[i];
     const prompt = buildVisualPrompt(scene.broll_cue, scene.tone ?? 'dramatic');
     const safeSegment = scene.segment.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 50);
-    const localPath = path.join(outputDir, `scene_${String(i).padStart(3, '0')}_${safeSegment}.png`);
+    const localPath = path.join(
+      outputDir,
+      `scene_${String(i).padStart(3, '0')}_${safeSegment}.png`
+    );
 
     logger.info(`Generating visual for scene ${i + 1}/${scenes.length}`, {
       segment: scene.segment,
