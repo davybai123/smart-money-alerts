@@ -109,7 +109,7 @@ export async function produceScript(
     full_script: JSON.stringify(script.scenes),
     word_count: script.wordCount,
     estimated_duration_seconds: script.estimatedDurationSeconds,
-    status: 'draft',
+    status: qualityReport.passed ? 'approved' : 'draft',
   });
 
   // Update the opportunity status
