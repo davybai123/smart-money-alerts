@@ -50,6 +50,7 @@ export async function fetchRedditHot(
   }>(url, {
     params: { limit },
     headers: { 'User-Agent': 'FacelessYT-Bot/1.0' },
+    timeout: 5000,
   });
 
   const posts = (response.data?.data?.children ?? []).map((child) => ({
@@ -96,6 +97,7 @@ export async function searchReddit(
       }>(url, {
         params: { q: query, restrict_sr: true, sort: 'relevance', t: 'week', limit: 10 },
         headers: { 'User-Agent': 'FacelessYT-Bot/1.0' },
+        timeout: 5000,
       });
 
       const posts = (response.data?.data?.children ?? []).map((child) => ({
