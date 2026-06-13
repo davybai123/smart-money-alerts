@@ -82,8 +82,8 @@ export async function discoverOpportunities(
       redditPosts = await withRetry(
         () => searchReddit(query, SOCCER_SUBREDDITS),
         {
-          maxAttempts: 3,
-          delayMs: 1000,
+          maxAttempts: 1,
+          delayMs: 0,
           backoff: false,
           label: `reddit.search(${query})`,
         }
@@ -141,8 +141,8 @@ export async function discoverOpportunities(
     const hotPosts = await withRetry(
       () => fetchRedditHot('soccer', 25),
       {
-        maxAttempts: 2,
-        delayMs: 1000,
+        maxAttempts: 1,
+        delayMs: 0,
         backoff: false,
         label: 'reddit.hot(soccer)',
       }
