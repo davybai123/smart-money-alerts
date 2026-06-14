@@ -21,6 +21,15 @@ export interface RedditPost {
   subreddit: string;
 }
 
+// ─── Helpers ───────────────────────────────────────────────────────────────
+
+/** Return an AbortSignal that fires after `ms` milliseconds. */
+function timeoutSignal(ms: number): AbortSignal {
+  const controller = new AbortController();
+  setTimeout(() => controller.abort(), ms);
+  return controller.signal;
+}
+
 // ─── Reddit public JSON API ─────────────────────────────────────────────────
 
 /**
@@ -50,7 +59,7 @@ export async function fetchRedditHot(
   }>(url, {
     params: { limit },
     headers: { 'User-Agent': 'FacelessYT-Bot/1.0' },
-    timeout: 5000,
+    signal: timeoutSignal(5000),
   });
 
   const posts = (response.data?.data?.children ?? []).map((child) => ({
@@ -97,7 +106,7 @@ export async function searchReddit(
       }>(url, {
         params: { q: query, restrict_sr: true, sort: 'relevance', t: 'week', limit: 10 },
         headers: { 'User-Agent': 'FacelessYT-Bot/1.0' },
-        timeout: 5000,
+        signal: timeoutSignal(5000),
       });
 
       const posts = (response.data?.data?.children ?? []).map((child) => ({
