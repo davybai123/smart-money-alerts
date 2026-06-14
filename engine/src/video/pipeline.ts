@@ -2,7 +2,7 @@ import ffmpeg from 'fluent-ffmpeg';
 import * as fs from 'fs';
 import * as path from 'path';
 import { createLogger } from '../lib/logger';
-import { updateVideo } from '../db/client';
+import { insertVideo, updateVideo } from '../db/client';
 import type { Script, ScriptScene } from '../db/schema';
 import { splitAndGenerateVoiceover } from '../voice/elevenlabs';
 import { generateSceneVisuals } from '../visuals/replicate';
@@ -88,6 +88,22 @@ export async function produceVideo(input: VideoProductionInput): Promise<VideoPr
   const scenes = ensureScenes(script);
   logger.info('Scenes parsed', { count: scenes.length });
 
+  // Step 1b: Create video record in DB so upload phase can find it
+  const videoRecord = await insertVideo({
+    script_id: script.id,
+    opportunity_id: script.opportunity_id,
+    youtube_id: null,
+    title: script.title,
+    description: '',
+    tags: [],
+    thumbnail_url: null,
+    video_url: null,
+    status: 'assembling',
+    scheduled_at: null,
+    published_at: null,
+  });
+  logger.info('Video record created', { videoId: videoRecord.id });
+
   // Step 2: Create output subdirectories
   logger.info('Step 2: Creating output directories');
   const audioDir = path.join(outputDir, 'audio');
@@ -161,7 +177,7 @@ export async function produceVideo(input: VideoProductionInput): Promise<VideoPr
     // Note: video_url and thumbnail_url would typically be S3 URLs after upload;
     // we store local paths as placeholders until the upload step runs.
     logger.info('Step 10: Updating video record in database');
-    await updateVideo(script.id, {
+    await updateVideo(videoRecord.id, {
       status: 'ready',
       video_url: assemblyResult.outputPath,
       thumbnail_url: thumbnailPath,
@@ -177,7 +193,7 @@ export async function produceVideo(input: VideoProductionInput): Promise<VideoPr
     logger.error('Video production failed', { error: (err as Error).message, scriptId: script.id });
 
     try {
-      await updateVideo(script.id, { status: 'failed' });
+      await updateVideo(videoRecord.id, { status: 'failed' });
     } catch (dbErr) {
       logger.error('Failed to update video status to failed', { error: (dbErr as Error).message });
     }

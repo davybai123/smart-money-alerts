@@ -5,6 +5,7 @@ import { collectAllActiveVideos, generatePerformanceReport } from '../analytics/
 import { analyzePerformance, updateScoringWeights, concludeThumbnailTests } from '../feedback/analyzer';
 import { scheduleUpload } from '../youtube/scheduler';
 import { createClient } from '@supabase/supabase-js';
+import type { Script } from '../db/schema';
 
 const log = createLogger('scheduler/autonomous');
 
@@ -192,10 +193,9 @@ async function assetPhase(): Promise<void> {
   const { produceVideo } = await import('../video/pipeline');
   const supabase = getSupabase();
 
-  // Get scripts associated with 'scripted' opportunities
   const { data: opportunities, error: oppErr } = await supabase
     .from('content_opportunities')
-    .select('id')
+    .select('id, topic, teams')
     .eq('status', 'scripted');
 
   if (oppErr) throw new Error(`Failed to fetch scripted opportunities: ${oppErr.message}`);
@@ -204,6 +204,12 @@ async function assetPhase(): Promise<void> {
     return;
   }
 
+  const oppMap = new Map<string, { topic: string; teams: string }>(
+    opportunities.map((o: { id: string; topic: string; teams: string }) => [
+      o.id,
+      { topic: o.topic, teams: o.teams },
+    ])
+  );
   const opportunityIds = opportunities.map((o: { id: string }) => o.id);
 
   const { data: scripts, error: scriptErr } = await supabase
@@ -222,14 +228,25 @@ async function assetPhase(): Promise<void> {
 
   for (const script of scripts) {
     try {
-      await produceVideo(script.id);
+      const opp = oppMap.get(script.opportunity_id as string);
+      if (!opp) {
+        log.warn(`No opportunity found for script`, { scriptId: script.id });
+        continue;
+      }
+      const outputDir = `/tmp/videos/${script.id as string}`;
+      await produceVideo({
+        script: script as Script,
+        topic: opp.topic,
+        teams: opp.teams,
+        outputDir,
+      });
       await supabase
         .from('scripts')
         .update({ status: 'producing' })
         .eq('id', script.id);
-      log.info(`Video production queued for script`, { scriptId: script.id });
+      log.info(`Video production started for script`, { scriptId: script.id });
     } catch (err) {
-      log.error(`Failed to queue video production for script ${script.id}`, {
+      log.error(`Failed to produce video for script ${script.id as string}`, {
         error: err instanceof Error ? err.message : String(err),
       });
     }
