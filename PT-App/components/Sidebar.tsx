@@ -11,6 +11,10 @@ const nav = [
   { href: "/recipes", label: "Recipes", icon: "🍳" },
   { href: "/journal", label: "Journal", icon: "📓" },
   { href: "/skittles", label: "Skittles 1:1", icon: "🏉" },
+  { href: "/faceless", label: "Faceless AI", icon: "🤖", section: "Faceless AI" },
+  { href: "/content", label: "Content Generator", icon: "⚽", section: "Faceless AI" },
+  { href: "/pipeline", label: "Pipeline Tracker", icon: "📊", section: "Faceless AI" },
+  { href: "/scheduler", label: "Social Scheduler", icon: "📅", section: "Faceless AI" },
 ];
 
 export default function Sidebar() {
@@ -25,9 +29,9 @@ export default function Sidebar() {
         style={{ background: "#080808", borderBottom: "1px solid #1e1e1e" }}
       >
         <div className="flex items-center gap-2">
-          <span style={{ fontSize: "1.4rem" }}>💪</span>
+          <span style={{ fontSize: "1.4rem" }}>🤖</span>
           <span style={{ fontWeight: 900, fontSize: "1.1rem", letterSpacing: "-0.02em" }}>
-            MONSER<span style={{ color: "#22c55e" }}>'S</span> GYM
+            FACELESS<span style={{ color: "#22c55e" }}>YT</span>
           </span>
         </div>
         <button
@@ -61,45 +65,55 @@ export default function Sidebar() {
         {/* Logo */}
         <div className="flex flex-col items-start px-6 pt-8 pb-6">
           <div className="flex items-center gap-2 mb-1">
-            <span style={{ fontSize: "2rem" }}>💪</span>
+            <span style={{ fontSize: "2rem" }}>🤖</span>
             <div>
               <div style={{ fontWeight: 900, fontSize: "1.1rem", letterSpacing: "-0.02em", lineHeight: 1 }}>
-                MONSER<span style={{ color: "#22c55e" }}>&apos;S</span> GYM
+                FACELESS<span style={{ color: "#22c55e" }}>YT</span>
               </div>
               <div style={{ fontSize: "0.65rem", color: "#555", letterSpacing: "0.12em", textTransform: "uppercase" }}>
-                Elite PT Platform
+                AI Content at Scale
               </div>
             </div>
           </div>
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 px-3 pb-6 flex flex-col gap-1">
-          {nav.map((item) => {
+        <nav className="flex-1 px-3 pb-6 flex flex-col gap-1 overflow-y-auto">
+          {nav.map((item, idx) => {
             const active = pathname === item.href;
+            const prevItem = nav[idx - 1];
+            const showDivider = "section" in item && (!prevItem || !("section" in prevItem));
             return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.75rem",
-                  padding: "0.6rem 0.875rem",
-                  borderRadius: "8px",
-                  fontWeight: active ? 700 : 500,
-                  fontSize: "0.875rem",
-                  textDecoration: "none",
-                  color: active ? "#22c55e" : "#aaa",
-                  background: active ? "rgba(34,197,94,0.08)" : "transparent",
-                  border: active ? "1px solid rgba(34,197,94,0.15)" : "1px solid transparent",
-                  transition: "all 0.15s",
-                }}
-              >
-                <span style={{ fontSize: "1.1rem" }}>{item.icon}</span>
-                {item.label}
-              </Link>
+              <div key={item.href}>
+                {showDivider && (
+                  <div style={{ paddingTop: "0.75rem", paddingBottom: "0.4rem", paddingLeft: "0.875rem" }}>
+                    <div style={{ fontSize: "0.6rem", fontWeight: 800, color: "#22c55e", textTransform: "uppercase", letterSpacing: "0.12em" }}>
+                      🤖 Faceless AI
+                    </div>
+                  </div>
+                )}
+                <Link
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.75rem",
+                    padding: "0.6rem 0.875rem",
+                    borderRadius: "8px",
+                    fontWeight: active ? 700 : 500,
+                    fontSize: "0.875rem",
+                    textDecoration: "none",
+                    color: active ? "#22c55e" : "#aaa",
+                    background: active ? "rgba(34,197,94,0.08)" : "transparent",
+                    border: active ? "1px solid rgba(34,197,94,0.15)" : "1px solid transparent",
+                    transition: "all 0.15s",
+                  }}
+                >
+                  <span style={{ fontSize: "1.1rem" }}>{item.icon}</span>
+                  {item.label}
+                </Link>
+              </div>
             );
           })}
         </nav>

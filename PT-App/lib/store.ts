@@ -121,3 +121,36 @@ export type Conversation = {
   unread: number;
   messages: Message[];
 };
+
+export type ContentPiece = {
+  id: string;
+  title: string;
+  platforms: string[];
+  contentType: string;
+  topic: string;
+  teams: string;
+  match: string;
+  stage: string;
+  generatedContent: string;
+  hashtags: string[];
+  thumbnailIdea: string;
+  hookLine: string;
+  status: "idea" | "scripted" | "recorded" | "edited" | "scheduled" | "posted";
+  scheduledDate: string;
+  postedDate: string;
+  views: number;
+  notes: string;
+  createdAt: string;
+};
+
+export type ScheduledPost = {
+  id: string;
+  contentId: string;
+  title: string;
+  platform: string;
+  scheduledDate: string;
+  caption: string;
+  hashtags: string[];
+  status: "draft" | "scheduled" | "posted";
+  views: number;
+};

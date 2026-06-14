@@ -6,8 +6,8 @@ import Sidebar from "@/components/Sidebar";
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist-sans" });
 
 export const metadata: Metadata = {
-  title: "Monser's Gym",
-  description: "Elite Rugby PT Coaching — Sessions, Nutrition, Supplements, Journal & 1:1 Coaching",
+  title: "Faceless YT",
+  description: "AI-powered faceless YouTube & social content suite for World Cup 2026 — generate, track and schedule at scale",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
