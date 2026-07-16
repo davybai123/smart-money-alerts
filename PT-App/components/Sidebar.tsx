@@ -11,6 +11,7 @@ const nav = [
   { href: "/recipes", label: "Recipes", icon: "🍳" },
   { href: "/journal", label: "Journal", icon: "📓" },
   { href: "/skittles", label: "Skittles 1:1", icon: "🏉" },
+  { href: "/mmd-drop", label: "MMD Drop Box", icon: "📥" },
 ];
 
 export default function Sidebar() {
