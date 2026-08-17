@@ -1,0 +1,8 @@
+[IF JPS 2015]
+[Member Pension Amount]
+Dear Mr(Title) (Surname),
+Your pension amount is [Pension Amount].
+[IF Member Has GMP]
+Your GMP amount is [GMP Amount].
+[/IF]
+[/IF]
