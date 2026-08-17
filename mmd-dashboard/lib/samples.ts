@@ -1,0 +1,39 @@
+// Bundled sample raw letters (mirrors mmd_generator/samples/*.txt in the
+// Python engine) so the dashboard has something to try immediately.
+
+export const SAMPLE_LETTERS: Record<string, string> = {
+  "Member -- JPS 2015 (nested conditionals)": `[IF JPS 2015]
+[Member Pension Amount]
+Dear Mr(Title) (Surname),
+Your pension amount is [Pension Amount].
+[IF Member Has GMP]
+Your GMP amount is [GMP Amount].
+[/IF]
+[/IF]
+`,
+  "Dependant -- realistic letter": `Dear Mr(Title) (Surname),
+
+We are writing to you as the dependant of the above member in connection with the Scheme.
+
+[ALL SCHEMES]
+
+The Trustees have reviewed the member's file and can confirm the following:
+
+| Description        | Amount |
+| ------------------- | ------ |
+| Dependant's pension | [Dependant Pension Amount] |
+| Date of birth       | [Date of Birth] |
+
+[IF Dependant Has GMP]
+Please note that a Guaranteed Minimum Pension (GMP) applies to this benefit. The GMP amount is [GMP Amount].
+[/IF]
+
+If you have any questions, please do not hesitate to contact us.
+
+Yours sincerely,
+
+[NOTE] pull digital signature block here
+
+The Pensions Team
+`,
+};

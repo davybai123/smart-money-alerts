@@ -2,3 +2,8 @@ node_modules/
 PT-App/node_modules/
 PT-App/.next/
 PT-App/.turbo/
+__pycache__/
+*.pyc
+.pytest_cache/
+mmd_generator/settings.json
+mmd_output/
